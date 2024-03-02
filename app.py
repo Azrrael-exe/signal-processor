@@ -4,6 +4,7 @@ from domain.values import InputRead
 from datetime import datetime
 from time import sleep
 from random import random
+import json
 
 def main():
     processor = AggregatorProcessor()
@@ -13,8 +14,18 @@ def main():
             timestamp=datetime.now(),
             source="source"
         )
-        print(input_read)
-        print(processor.process(input_read))
+
+        with open("output.txt", "a") as file:
+            result = processor.process(input_read)
+            output = {
+                "timestamp": str(input_read.timestamp),
+                "value": input_read.value,
+                "source": input_read.source,
+                "mean": result.mean_value,
+                "change_rate": result.change_rate,
+            }
+            file.write(json.dumps(output) + "\n")
+            print(output)
         sleep(1)
 
 
